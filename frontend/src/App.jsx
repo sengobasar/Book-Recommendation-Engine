@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 
 // API Base URL
-const API_BASE_URL = 'http://localhost:8000';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 // Enhanced Icons with micro-animations
 const Search = ({ className = "" }) => (
