@@ -11,10 +11,14 @@ from functools import lru_cache
 # --- FastAPI App ---
 app = FastAPI(title="Book Recommendation API", version="1.0.0")
 
-# Allow frontend access
+# Allow frontend access - FIXED FOR PRODUCTION
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origins=[
+        "http://localhost:5173", 
+        "http://127.0.0.1:5173",
+        "https://book-recommendation-frontend.netlify.app"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
