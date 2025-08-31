@@ -20,7 +20,7 @@ Fast & Scalable - Built with modern web technologies for optimal performance
 
 🚀 Live Demo
 🌟 Try it now: https://book-recommendation-frontend.netlify.app
-Backend API: https://book-recommendation-engine-mp69.onrender.com
+Backend API: [https://book-recommendation-engine-mp69.onrender.com](https://book-recommendation-engine-1-6nxc.onrender.com/)
 API Documentation: https://book-recommendation-engine-mp69.onrender.com/docs
 🏗️ Architecture
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
