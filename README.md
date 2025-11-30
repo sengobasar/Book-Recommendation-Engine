@@ -2,6 +2,8 @@
 
 A modern, full-stack book recommendation platform that uses advanced machine learning algorithms to help users discover their next favorite book. Built with the MERN stack (MongoDB, Express.js, React.js, Node.js) and powered by collaborative filtering and content-based recommendation engines.
 
+check the webiste here:- https://book-recommendation-frontend.netlify.app/
+
 ## 🌟 Features
 
 - **Popular Books Discovery** - Explore trending and highly-rated books
