@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 
-// API Base URL
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+// API Base URL (points to the Express backend)
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 // Enhanced Icons with micro-animations
 const Search = ({ className = "" }) => (
@@ -932,15 +932,15 @@ export default function App() {
                                 AI Engine Offline
                             </h3>
                             <p className={`mb-4 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                                Our recommendation engine is currently unavailable. Please ensure your FastAPI server is running.
+                                Our recommendation engine is currently unavailable. Please ensure your backend server is running.
                             </p>
                             <div className={`p-4 rounded-3 text-start mx-auto ${
                                 isDarkMode ? 'bg-gray-900 text-gray-300' : 'bg-gray-800 text-gray-100'
                             }`} style={{ maxWidth: '500px', fontFamily: 'Monaco, monospace' }}>
                                 <div className="small">
-                                    <div className="text-success">$ cd your-backend-directory</div>
-                                    <div className="text-info">$ python -m uvicorn main:app --reload</div>
-                                    <div className="text-warning">$ # Server will start on http://localhost:8000</div>
+                                    <div className="text-success">$ cd server</div>
+                                    <div className="text-info">$ npm run dev</div>
+                                    <div className="text-warning">$ # Server will start on http://localhost:5000</div>
                                 </div>
                             </div>
                         </div>
@@ -997,7 +997,7 @@ export default function App() {
                                             <path d="M2 12l10 5 10-5"/>
                                         </svg>
                                     </div>
-                                    <span className="fw-semibold">FastAPI Backend</span>
+                                    <span className="fw-semibold">Express Backend</span>
                                 </div>
                                 
                                 <div className="d-flex align-items-center">

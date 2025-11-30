@@ -1,53 +1,47 @@
-📚 AI-Powered Book Recommendation System
-A modern, full-stack book recommendation platform that uses advanced machine learning algorithms to help users discover their next favorite book. Built with React, FastAPI, and powered by collaborative filtering and content-based recommendation engines.
-🌟 Live Demo
-🚀 Try it now: https://book-recommendation-frontend.netlify.app
-Experience the full functionality:
+# 📚 AI-Powered Book Recommendation System (MERN Stack)
 
-Browse popular and trending books
-Get AI-powered personalized recommendations
-Search for books similar to your favorites
-Real-time recommendation engine status
+A modern, full-stack book recommendation platform that uses advanced machine learning algorithms to help users discover their next favorite book. Built with the MERN stack (MongoDB, Express.js, React.js, Node.js) and powered by collaborative filtering and content-based recommendation engines.
 
-🌟 Features
+## 🌟 Features
 
-Popular Books Discovery - Explore trending and highly-rated books
-AI-Powered Recommendations - Get personalized suggestions using collaborative filtering
-Smart Search - Find books similar to your favorites through content analysis
-Real-time Engine Status - Live monitoring of recommendation engine availability
-Responsive Design - Seamless experience across all devices
-Fast & Scalable - Built with modern web technologies for optimal performance
+- **Popular Books Discovery** - Explore trending and highly-rated books
+- **AI-Powered Recommendations** - Get personalized suggestions using collaborative filtering
+- **Smart Search** - Find books similar to your favorites through content analysis
+- **User Authentication** - Secure user accounts and personalized recommendations
+- **Responsive Design** - Seamless experience across all devices
+- **Fast & Scalable** - Built with modern web technologies for optimal performance
 
-🚀 Live Demo
-🌟 Try it now: https://book-recommendation-frontend.netlify.app
-Backend API: [https://book-recommendation-engine-mp69.onrender.com](https://book-recommendation-engine-1-6nxc.onrender.com/)
+## 🏗️ Architecture
 
-🏗️ Architecture
+```
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   React Frontend │───▶│  FastAPI Backend │───▶│  ML Algorithms  │
-│     (Netlify)   │    │     (Render)     │    │ (Scikit-learn)  │
+│  React Frontend │◄──►│  Node.js/Express │◄──►│     MongoDB     │
+│     (Vite)      │    │     Backend      │    │  (Database)     │
 └─────────────────┘    └──────────────────┘    └─────────────────┘
-🛠️ Tech Stack
-Frontend
+```
 
-React 18 - Modern UI framework
-Vite - Fast build tool and development server
-Tailwind CSS - Utility-first CSS framework
-JavaScript ES6+ - Modern JavaScript features
+## 🛠️ Tech Stack
 
-Backend
+### Frontend
+- **React 18** - Modern UI framework
+- **Vite** - Fast build tool and development server
+- **Tailwind CSS** - Utility-first CSS framework
+- **JavaScript ES6+** - Modern JavaScript features
+- **React Router** - Client-side routing
+- **Axios** - HTTP client for API requests
 
-FastAPI - High-performance Python web framework
-Pandas & NumPy - Data manipulation and analysis
-Scikit-learn - Machine learning library
-Joblib - Model serialization and caching
-CORS Middleware - Cross-origin resource sharing
+### Backend
+- **Node.js** - JavaScript runtime
+- **Express.js** - Web application framework
+- **MongoDB** - NoSQL database
+- **Mongoose** - MongoDB object modeling
+- **JWT** - JSON Web Tokens for authentication
+- **Bcrypt** - Password hashing
 
-Machine Learning
-
-Collaborative Filtering - User-item recommendation matrix
-Content-Based Filtering - Book similarity analysis
-Popularity-Based Recommendations - Trending books discovery
+### Machine Learning
+- **Collaborative Filtering** - User-item recommendation matrix
+- **Content-Based Filtering** - Book similarity analysis
+- **Popularity-Based Recommendations** - Trending books discovery
 
 Deployment
 
