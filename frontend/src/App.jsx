@@ -318,8 +318,8 @@ const LoginPage = ({ onLogin, isDarkMode }) => {
                         <div className="mb-3">
                             <label className="small fw-bold mb-1 opacity-75">Full Name</label>
                             <input
-                                className={`form-control py-2 rounded-3 ${isDarkMode ? 'bg-gray-800 border-gray-700 text-white shadow-none' : 'bg-gray-50 border-0 shadow-none'}`}
-                                placeholder="Enter your name"
+                                className={`form-control py-3 rounded-4 shadow-sm transition-all ${isDarkMode ? 'bg-gray-800 border-gray-700 text-white focus:bg-gray-700' : 'bg-gray-50 border-0 focus:bg-white'}`}
+                                placeholder="What's your name?"
                                 required
                                 value={username}
                                 onChange={e => setUsername(e.target.value)}
@@ -329,7 +329,7 @@ const LoginPage = ({ onLogin, isDarkMode }) => {
                     <div className="mb-3">
                         <label className="small fw-bold mb-1 opacity-75">Email Address</label>
                         <input
-                            className={`form-control py-2 rounded-3 ${isDarkMode ? 'bg-gray-800 border-gray-700 text-white shadow-none' : 'bg-gray-50 border-0 shadow-none'}`}
+                            className={`form-control py-3 rounded-4 shadow-sm transition-all ${isDarkMode ? 'bg-gray-800 border-gray-700 text-white focus:bg-gray-700' : 'bg-gray-50 border-0 focus:bg-white'}`}
                             type="email"
                             placeholder="name@example.com"
                             required
@@ -340,7 +340,7 @@ const LoginPage = ({ onLogin, isDarkMode }) => {
                     <div className="mb-4">
                         <label className="small fw-bold mb-1 opacity-75">Password</label>
                         <input
-                            className={`form-control py-2 rounded-3 ${isDarkMode ? 'bg-gray-800 border-gray-700 text-white shadow-none' : 'bg-gray-50 border-0 shadow-none'}`}
+                            className={`form-control py-3 rounded-4 shadow-sm transition-all ${isDarkMode ? 'bg-gray-800 border-gray-700 text-white focus:bg-gray-700' : 'bg-gray-50 border-0 focus:bg-white'}`}
                             type="password"
                             placeholder="••••••••"
                             required
@@ -679,10 +679,6 @@ export default function App() {
         ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white'
         : 'bg-gradient-to-br from-gray-50 via-white to-gray-100 text-dark';
 
-    if (!authId) {
-        return <LoginPage onLogin={setAuthId} isDarkMode={isDarkMode} />;
-    }
-
     return (
         <>
             <style>{`
@@ -865,330 +861,340 @@ export default function App() {
             }
         `}</style>
 
-            {page === "profile" ? (
-                <ProfilePage
-                    goBack={() => setPage("home")}
-                    isDarkMode={isDarkMode}
-                    authId={authId}
-                />
-            ) : (
-                <div className={`min-vh-100 position-relative ${appClass}`}>
+            {!authId ? (
+                <div className="position-relative">
                     <FloatingParticles isDarkMode={isDarkMode} />
-
-                    <header className="py-5 position-relative" style={{ zIndex: 10 }}>
-                        <div className="container-fluid px-4">
-                            <div className="position-absolute top-0 end-0 m-4 d-flex align-items-center">
-                                <button
-                                    className="btn btn-outline-primary me-3 shadow-sm rounded-pill px-4"
-                                    onClick={() => setPage("profile")}
-                                >
-                                    Profile
-                                </button>
-                                <button
-                                    className={`btn rounded-circle p-3 theme-toggle shadow-sm ${isDarkMode
-                                        ? 'glassmorphism-dark text-white'
-                                        : 'glassmorphism text-dark'
-                                        }`}
-                                    onClick={toggleTheme}
-                                >
-                                    {isDarkMode ? <Sun /> : <Moon />}
-                                </button>
-                            </div>
-
-                            <div className="text-center">
-                                <div className="mb-4">
-                                    <h1 className="display-3 fw-bold mb-3 hero-text animate-fade-in-up">
-                                        AI-Powered Book Discovery
-                                    </h1>
-                                    <p className={`lead mx-auto animate-fade-in-up ${isDarkMode ? 'text-gray-300' : 'text-gray-600'
-                                        }`} style={{
-                                            maxWidth: '700px',
-                                            animationDelay: '0.2s',
-                                            lineHeight: '1.6'
-                                        }}>
-                                        Discover your next literary adventure with our intelligent recommendation engine.
-                                        Powered by advanced machine learning algorithms and curated by book lovers.
-                                    </p>
-                                </div>
-
-                                {/* Stats Section */}
-                                <div className="row justify-content-center mb-4 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-                                    <div className="col-auto">
-                                        <StatsCounter
-                                            value={10000}
-                                            label="Books Analyzed"
-                                            icon={<Book className="text-primary" />}
-                                            isDarkMode={isDarkMode}
-                                        />
-                                    </div>
-                                    <div className="col-auto">
-                                        <StatsCounter
-                                            value={50000}
-                                            label="User Ratings"
-                                            icon={<Star filled={true} className="text-warning" />}
-                                            isDarkMode={isDarkMode}
-                                        />
-                                    </div>
-                                    <div className="col-auto">
-                                        <StatsCounter
-                                            value={1000}
-                                            label="Daily Users"
-                                            icon={<Users className="text-success" />}
-                                            isDarkMode={isDarkMode}
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className={`d-flex align-items-center justify-content-center animate-fade-in-up ${isDarkMode ? 'text-gray-400' : 'text-gray-600'
-                                    }`} style={{ animationDelay: '0.6s' }}>
-                                    <div className={`me-2 rounded-circle status-indicator ${backendStatus === 'connected' ? 'bg-success' :
-                                        backendStatus === 'error' ? 'bg-danger' : 'bg-warning'
-                                        }`} style={{ width: '12px', height: '12px' }}></div>
-                                    <span className="fw-medium">
-                                        AI Engine {
-                                            backendStatus === 'connected' ? 'Online & Ready' :
-                                                backendStatus === 'error' ? 'Offline' : 'Initializing...'
-                                        }
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </header>
-
-                    <main className="container-fluid px-4 position-relative" style={{ zIndex: 10 }}>
-                        {/* Feature Cards Section */}
-                        <div className="row g-4 mb-5 animate-fade-in-up" style={{ animationDelay: '0.8s' }}>
-                            <div className="col-12 col-md-4">
-                                <div className="feature-card p-4 rounded-4 shadow-lg text-white position-relative overflow-hidden"
-                                    style={{
-                                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                                        minHeight: '200px'
-                                    }}>
-                                    <div className="position-relative z-2">
-                                        <div className="d-flex align-items-center mb-3">
-                                            <TrendingUp />
-                                            <span className="ms-2 fs-5 fw-bold">Trending Now</span>
-                                        </div>
-                                        <h3 className="fs-4 fw-bold mb-3">Popular Discoveries</h3>
-                                        <p className="opacity-90 mb-0">
-                                            Explore books that are captivating readers worldwide.
-                                            Our algorithm analyzes reading patterns and ratings to bring you the most loved titles.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="col-12 col-md-4">
-                                <div className="feature-card p-4 rounded-4 shadow-lg text-white position-relative overflow-hidden"
-                                    style={{
-                                        background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-                                        minHeight: '200px'
-                                    }}>
-                                    <div className="position-relative z-2">
-                                        <div className="d-flex align-items-center mb-3">
-                                            <Users />
-                                            <span className="ms-2 fs-5 fw-bold">Just For You</span>
-                                        </div>
-                                        <h3 className="fs-4 fw-bold mb-3">AI Personalization</h3>
-                                        <p className="opacity-90 mb-0">
-                                            Get tailored recommendations based on collaborative filtering. Discover books loved by readers with similar tastes to yours.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="col-12 col-md-4">
-                                <div className="feature-card p-4 rounded-4 shadow-lg text-white position-relative overflow-hidden"
-                                    style={{
-                                        background: 'linear-gradient(135deg, #5ee7df 0%, #b490ca 100%)',
-                                        minHeight: '200px'
-                                    }}>
-                                    <div className="position-relative z-2">
-                                        <div className="d-flex align-items-center mb-3">
-                                            <Search />
-                                            <span className="ms-2 fs-5 fw-bold">Smart Search</span>
-                                        </div>
-                                        <h3 className="fs-4 fw-bold mb-3">Content Matching</h3>
-                                        <p className="opacity-90 mb-0">
-                                            Find books similar to your favorites through advanced content analysis. Perfect for discovering new authors in your preferred genres.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Search Section */}
-                        <div className="mb-5 animate-fade-in-up" style={{ animationDelay: '1s' }}>
-                            <div className={`p-4 p-md-5 rounded-5 shadow-2xl ${isDarkMode ? 'glassmorphism-dark' : 'glassmorphism'}`}>
-                                <h2 className="display-6 fw-bold mb-4 text-center">Ready for your next favorite book?</h2>
-                                <div className="row justify-content-center">
-                                    <div className="col-12 col-lg-8">
-                                        <div className="input-group input-group-lg shadow-sm rounded-pill overflow-hidden border-0">
-                                            <span className={`input-group-text border-0 ps-4 ${isDarkMode ? 'bg-gray-800 text-gray-400' : 'bg-white text-gray-500'}`}>
-                                                <Search />
-                                            </span>
-                                            <input
-                                                type="text"
-                                                className={`form-control border-0 py-4 fs-5 search-input ${isDarkMode ? 'bg-gray-800 text-white shadow-none' : 'bg-white text-dark shadow-none'}`}
-                                                placeholder="Enter a book you loved (e.g., 'The Hobbit')..."
-                                                value={searchTerm}
-                                                onChange={(e) => setSearchTerm(e.target.value)}
-                                                onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                                            />
-                                            <button
-                                                className="btn btn-primary px-5 fw-bold btn-search"
-                                                onClick={handleSearch}
-                                            >
-                                                Discover
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Tabs content */}
-                        <div className="mb-5">
-                            <ul className="nav nav-pills justify-content-center mb-5 gap-3 animate-fade-in-up" style={{ animationDelay: '1.2s' }}>
-                                {tabs.map(tab => (
-                                    <li className="nav-item" key={tab.id}>
-                                        <button
-                                            className={`nav-link px-4 py-3 d-flex align-items-center ${activeTab === tab.id ? 'active' : isDarkMode ? 'text-gray-400' : 'text-gray-600'
-                                                }`}
-                                            onClick={() => setActiveTab(tab.id)}
-                                        >
-                                            <span className="me-2 d-flex">{tab.icon}</span>
-                                            <span className="fw-bold">{tab.label}</span>
-                                        </button>
-                                    </li>
-                                ))}
-                            </ul>
-
-                            <div className="text-center mb-5 animate-fade-in-up" style={{ animationDelay: '1.4s' }}>
-                                <h2 className="display-5 fw-bold mb-2">
-                                    {tabs.find(t => t.id === activeTab).description}
-                                </h2>
-                                <p className={`lead ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                                    {tabs.find(t => t.id === activeTab).subtitle}
-                                </p>
-                            </div>
-
-                            {/* Books Display Area */}
-                            <div className="min-vh-50">
-                                {loading && (
-                                    <div className="animate-fade-in-up">
-                                        <LoadingSpinner isDarkMode={isDarkMode} />
-                                    </div>
-                                )}
-
-                                {error && (
-                                    <div className={`alert ${isDarkMode ? 'bg-red-900 bg-opacity-30 text-red-200 border-red-800' : 'alert-danger shadow-sm'} rounded-4 p-5 text-center animate-fade-in-up`}>
-                                        <div className="mb-4">
-                                            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className={`${isDarkMode ? 'text-red-400' : 'text-red-500'}`}>
-                                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-                                                <line x1="12" y1="9" x2="12" y2="13" />
-                                                <line x1="12" y1="17" x2="12.01" y2="17" />
-                                            </svg>
-                                        </div>
-                                        <h3 className="fw-bold mb-3 mt-4">Offline Mode</h3>
-                                        <p className="mb-4 fs-5 opacity-90">
-                                            {error}
-                                        </p>
-                                        <div className={`p-4 rounded-3 text-start mx-auto ${isDarkMode ? 'bg-gray-900 text-gray-300' : 'bg-gray-800 text-gray-100'
-                                            }`} style={{ maxWidth: '500px', fontFamily: 'Monaco, monospace' }}>
-                                            <div className="small">
-                                                <div className="text-success">$ cd server</div>
-                                                <div className="text-info">$ npm run dev</div>
-                                                <div className="text-warning">$ # Server will start on http://localhost:5000</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Books Grid */}
-                                {!loading && !error && books.length > 0 && (
-                                    <div className="book-grid">
-                                        {books.map((book, index) => (
-                                            <BookCard
-                                                key={`${book['Book-Title'] || book.title}-${index}`}
-                                                book={book}
-                                                isDarkMode={isDarkMode}
-                                                index={index}
-                                            />
-                                        ))}
-                                    </div>
-                                )}
-
-                                {/* Empty State */}
-                                {!loading && !error && books.length === 0 && backendStatus === 'connected' && (
-                                    <div className="text-center py-5">
-                                        <div className="mb-4">
-                                            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className={`${isDarkMode ? 'text-gray-600' : 'text-gray-400'}`}>
-                                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-                                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-                                            </svg>
-                                        </div>
-                                        <h3 className={`fw-bold mb-3 ${isDarkMode ? 'text-white' : 'text-dark'}`}>
-                                            No Books Found
-                                        </h3>
-                                        <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                                            {activeTab === 'collaborative'
-                                                ? "Try searching for a different book title or check the spelling."
-                                                : "No recommendations are currently available for this category."
-                                            }
-                                        </p>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    </main>
-
-                    {/* Footer */}
-                    <footer className={`text-center py-5 mt-5 ${isDarkMode ? 'text-gray-500' : 'text-gray-600'}`}>
-                        <div className="container">
-                            <div className="row justify-content-center">
-                                <div className="col-12 col-md-8">
-                                    <div className="d-flex justify-content-center align-items-center flex-wrap gap-4 mb-3">
-                                        <div className="d-flex align-items-center">
-                                            <div className="me-2 p-2 rounded-circle bg-gradient-to-r from-blue-500 to-purple-600">
-                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
-                                                    <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                                                    <path d="M2 17l10 5 10-5" />
-                                                    <path d="M2 12l10 5 10-5" />
-                                                </svg>
-                                            </div>
-                                            <span className="fw-semibold">Express Backend</span>
-                                        </div>
-
-                                        <div className="d-flex align-items-center">
-                                            <div className="me-2 p-2 rounded-circle bg-gradient-to-r from-cyan-500 to-blue-500">
-                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
-                                                    <circle cx="12" cy="12" r="10" />
-                                                    <circle cx="12" cy="12" r="6" />
-                                                    <circle cx="12" cy="12" r="2" />
-                                                </svg>
-                                            </div>
-                                            <span className="fw-semibold">React Frontend</span>
-                                        </div>
-
-                                        <div className="d-flex align-items-center">
-                                            <div className="me-2 p-2 rounded-circle bg-gradient-to-r from-green-500 to-teal-500">
-                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
-                                                    <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                                                </svg>
-                                            </div>
-                                            <span className="fw-semibold">AI Powered</span>
-                                        </div>
-                                    </div>
-
-                                    <p className="mb-0 small">
-                                        © 2024 AI Book Discovery Platform. Built with modern web technologies and powered by machine learning algorithms.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </footer>
+                    <LoginPage onLogin={setAuthId} isDarkMode={isDarkMode} />
                 </div>
+            ) : (
+                <>
+
+                    {page === "profile" ? (
+                        <ProfilePage
+                            goBack={() => setPage("home")}
+                            isDarkMode={isDarkMode}
+                            authId={authId}
+                        />
+                    ) : (
+                        <div className={`min-vh-100 position-relative ${appClass}`}>
+                            <FloatingParticles isDarkMode={isDarkMode} />
+
+                            <header className="py-5 position-relative" style={{ zIndex: 10 }}>
+                                <div className="container-fluid px-4">
+                                    <div className="position-absolute top-0 end-0 m-4 d-flex align-items-center">
+                                        <button
+                                            className="btn btn-outline-primary me-3 shadow-sm rounded-pill px-4"
+                                            onClick={() => setPage("profile")}
+                                        >
+                                            Profile
+                                        </button>
+                                        <button
+                                            className={`btn rounded-circle p-3 theme-toggle shadow-sm ${isDarkMode
+                                                ? 'glassmorphism-dark text-white'
+                                                : 'glassmorphism text-dark'
+                                                }`}
+                                            onClick={toggleTheme}
+                                        >
+                                            {isDarkMode ? <Sun /> : <Moon />}
+                                        </button>
+                                    </div>
+
+                                    <div className="text-center">
+                                        <div className="mb-4">
+                                            <h1 className="display-3 fw-bold mb-3 hero-text animate-fade-in-up">
+                                                AI-Powered Book Discovery
+                                            </h1>
+                                            <p className={`lead mx-auto animate-fade-in-up ${isDarkMode ? 'text-gray-300' : 'text-gray-600'
+                                                }`} style={{
+                                                    maxWidth: '700px',
+                                                    animationDelay: '0.2s',
+                                                    lineHeight: '1.6'
+                                                }}>
+                                                Discover your next literary adventure with our intelligent recommendation engine.
+                                                Powered by advanced machine learning algorithms and curated by book lovers.
+                                            </p>
+                                        </div>
+
+                                        {/* Stats Section */}
+                                        <div className="row justify-content-center mb-4 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+                                            <div className="col-auto">
+                                                <StatsCounter
+                                                    value={10000}
+                                                    label="Books Analyzed"
+                                                    icon={<Book className="text-primary" />}
+                                                    isDarkMode={isDarkMode}
+                                                />
+                                            </div>
+                                            <div className="col-auto">
+                                                <StatsCounter
+                                                    value={50000}
+                                                    label="User Ratings"
+                                                    icon={<Star filled={true} className="text-warning" />}
+                                                    isDarkMode={isDarkMode}
+                                                />
+                                            </div>
+                                            <div className="col-auto">
+                                                <StatsCounter
+                                                    value={1000}
+                                                    label="Daily Users"
+                                                    icon={<Users className="text-success" />}
+                                                    isDarkMode={isDarkMode}
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className={`d-flex align-items-center justify-content-center animate-fade-in-up ${isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                                            }`} style={{ animationDelay: '0.6s' }}>
+                                            <div className={`me-2 rounded-circle status-indicator ${backendStatus === 'connected' ? 'bg-success' :
+                                                backendStatus === 'error' ? 'bg-danger' : 'bg-warning'
+                                                }`} style={{ width: '12px', height: '12px' }}></div>
+                                            <span className="fw-medium">
+                                                AI Engine {
+                                                    backendStatus === 'connected' ? 'Online & Ready' :
+                                                        backendStatus === 'error' ? 'Offline' : 'Initializing...'
+                                                }
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </header>
+
+                            <main className="container-fluid px-4 position-relative" style={{ zIndex: 10 }}>
+                                {/* Feature Cards Section */}
+                                <div className="row g-4 mb-5 animate-fade-in-up" style={{ animationDelay: '0.8s' }}>
+                                    <div className="col-12 col-md-4">
+                                        <div className="feature-card p-4 rounded-4 shadow-lg text-white position-relative overflow-hidden"
+                                            style={{
+                                                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                                minHeight: '200px'
+                                            }}>
+                                            <div className="position-relative z-2">
+                                                <div className="d-flex align-items-center mb-3">
+                                                    <TrendingUp />
+                                                    <span className="ms-2 fs-5 fw-bold">Trending Now</span>
+                                                </div>
+                                                <h3 className="fs-4 fw-bold mb-3">Popular Discoveries</h3>
+                                                <p className="opacity-90 mb-0">
+                                                    Explore books that are captivating readers worldwide.
+                                                    Our algorithm analyzes reading patterns and ratings to bring you the most loved titles.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="col-12 col-md-4">
+                                        <div className="feature-card p-4 rounded-4 shadow-lg text-white position-relative overflow-hidden"
+                                            style={{
+                                                background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                                                minHeight: '200px'
+                                            }}>
+                                            <div className="position-relative z-2">
+                                                <div className="d-flex align-items-center mb-3">
+                                                    <Users />
+                                                    <span className="ms-2 fs-5 fw-bold">Just For You</span>
+                                                </div>
+                                                <h3 className="fs-4 fw-bold mb-3">AI Personalization</h3>
+                                                <p className="opacity-90 mb-0">
+                                                    Get tailored recommendations based on collaborative filtering. Discover books loved by readers with similar tastes to yours.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="col-12 col-md-4">
+                                        <div className="feature-card p-4 rounded-4 shadow-lg text-white position-relative overflow-hidden"
+                                            style={{
+                                                background: 'linear-gradient(135deg, #5ee7df 0%, #b490ca 100%)',
+                                                minHeight: '200px'
+                                            }}>
+                                            <div className="position-relative z-2">
+                                                <div className="d-flex align-items-center mb-3">
+                                                    <Search />
+                                                    <span className="ms-2 fs-5 fw-bold">Smart Search</span>
+                                                </div>
+                                                <h3 className="fs-4 fw-bold mb-3">Content Matching</h3>
+                                                <p className="opacity-90 mb-0">
+                                                    Find books similar to your favorites through advanced content analysis. Perfect for discovering new authors in your preferred genres.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Search Section */}
+                                <div className="mb-5 animate-fade-in-up" style={{ animationDelay: '1s' }}>
+                                    <div className={`p-4 p-md-5 rounded-5 shadow-2xl ${isDarkMode ? 'glassmorphism-dark' : 'glassmorphism'}`}>
+                                        <h2 className="display-6 fw-bold mb-4 text-center">Ready for your next favorite book?</h2>
+                                        <div className="row justify-content-center">
+                                            <div className="col-12 col-lg-8">
+                                                <div className="input-group input-group-lg shadow-sm rounded-pill overflow-hidden border-0">
+                                                    <span className={`input-group-text border-0 ps-4 ${isDarkMode ? 'bg-gray-800 text-gray-400' : 'bg-white text-gray-500'}`}>
+                                                        <Search />
+                                                    </span>
+                                                    <input
+                                                        type="text"
+                                                        className={`form-control border-0 py-4 fs-5 search-input ${isDarkMode ? 'bg-gray-800 text-white shadow-none' : 'bg-white text-dark shadow-none'}`}
+                                                        placeholder="Enter a book you loved (e.g., 'The Hobbit')..."
+                                                        value={searchTerm}
+                                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                                        onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                                                    />
+                                                    <button
+                                                        className="btn btn-primary px-5 fw-bold btn-search"
+                                                        onClick={handleSearch}
+                                                    >
+                                                        Discover
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Tabs content */}
+                                <div className="mb-5">
+                                    <ul className="nav nav-pills justify-content-center mb-5 gap-3 animate-fade-in-up" style={{ animationDelay: '1.2s' }}>
+                                        {tabs.map(tab => (
+                                            <li className="nav-item" key={tab.id}>
+                                                <button
+                                                    className={`nav-link px-4 py-3 d-flex align-items-center ${activeTab === tab.id ? 'active' : isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                                                        }`}
+                                                    onClick={() => setActiveTab(tab.id)}
+                                                >
+                                                    <span className="me-2 d-flex">{tab.icon}</span>
+                                                    <span className="fw-bold">{tab.label}</span>
+                                                </button>
+                                            </li>
+                                        ))}
+                                    </ul>
+
+                                    <div className="text-center mb-5 animate-fade-in-up" style={{ animationDelay: '1.4s' }}>
+                                        <h2 className="display-5 fw-bold mb-2">
+                                            {tabs.find(t => t.id === activeTab).description}
+                                        </h2>
+                                        <p className={`lead ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                                            {tabs.find(t => t.id === activeTab).subtitle}
+                                        </p>
+                                    </div>
+
+                                    {/* Books Display Area */}
+                                    <div className="min-vh-50">
+                                        {loading && (
+                                            <div className="animate-fade-in-up">
+                                                <LoadingSpinner isDarkMode={isDarkMode} />
+                                            </div>
+                                        )}
+
+                                        {error && (
+                                            <div className={`alert ${isDarkMode ? 'bg-red-900 bg-opacity-30 text-red-200 border-red-800' : 'alert-danger shadow-sm'} rounded-4 p-5 text-center animate-fade-in-up`}>
+                                                <div className="mb-4">
+                                                    <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className={`${isDarkMode ? 'text-red-400' : 'text-red-500'}`}>
+                                                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                                                        <line x1="12" y1="9" x2="12" y2="13" />
+                                                        <line x1="12" y1="17" x2="12.01" y2="17" />
+                                                    </svg>
+                                                </div>
+                                                <h3 className="fw-bold mb-3 mt-4">Offline Mode</h3>
+                                                <p className="mb-4 fs-5 opacity-90">
+                                                    {error}
+                                                </p>
+                                                <div className={`p-4 rounded-3 text-start mx-auto ${isDarkMode ? 'bg-gray-900 text-gray-300' : 'bg-gray-800 text-gray-100'
+                                                    }`} style={{ maxWidth: '500px', fontFamily: 'Monaco, monospace' }}>
+                                                    <div className="small">
+                                                        <div className="text-success">$ cd server</div>
+                                                        <div className="text-info">$ npm run dev</div>
+                                                        <div className="text-warning">$ # Server will start on http://localhost:5000</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {/* Books Grid */}
+                                        {!loading && !error && books.length > 0 && (
+                                            <div className="book-grid">
+                                                {books.map((book, index) => (
+                                                    <BookCard
+                                                        key={`${book['Book-Title'] || book.title}-${index}`}
+                                                        book={book}
+                                                        isDarkMode={isDarkMode}
+                                                        index={index}
+                                                    />
+                                                ))}
+                                            </div>
+                                        )}
+
+                                        {/* Empty State */}
+                                        {!loading && !error && books.length === 0 && backendStatus === 'connected' && (
+                                            <div className="text-center py-5">
+                                                <div className="mb-4">
+                                                    <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className={`${isDarkMode ? 'text-gray-600' : 'text-gray-400'}`}>
+                                                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                                                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                                                    </svg>
+                                                </div>
+                                                <h3 className={`fw-bold mb-3 ${isDarkMode ? 'text-white' : 'text-dark'}`}>
+                                                    No Books Found
+                                                </h3>
+                                                <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                                                    {activeTab === 'collaborative'
+                                                        ? "Try searching for a different book title or check the spelling."
+                                                        : "No recommendations are currently available for this category."
+                                                    }
+                                                </p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </main>
+
+                            {/* Footer */}
+                            <footer className={`text-center py-5 mt-5 ${isDarkMode ? 'text-gray-500' : 'text-gray-600'}`}>
+                                <div className="container">
+                                    <div className="row justify-content-center">
+                                        <div className="col-12 col-md-8">
+                                            <div className="d-flex justify-content-center align-items-center flex-wrap gap-4 mb-3">
+                                                <div className="d-flex align-items-center">
+                                                    <div className="me-2 p-2 rounded-circle bg-gradient-to-r from-blue-500 to-purple-600">
+                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
+                                                            <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                                                            <path d="M2 17l10 5 10-5" />
+                                                            <path d="M2 12l10 5 10-5" />
+                                                        </svg>
+                                                    </div>
+                                                    <span className="fw-semibold">Express Backend</span>
+                                                </div>
+
+                                                <div className="d-flex align-items-center">
+                                                    <div className="me-2 p-2 rounded-circle bg-gradient-to-r from-cyan-500 to-blue-500">
+                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
+                                                            <circle cx="12" cy="12" r="10" />
+                                                            <circle cx="12" cy="12" r="6" />
+                                                            <circle cx="12" cy="12" r="2" />
+                                                        </svg>
+                                                    </div>
+                                                    <span className="fw-semibold">React Frontend</span>
+                                                </div>
+
+                                                <div className="d-flex align-items-center">
+                                                    <div className="me-2 p-2 rounded-circle bg-gradient-to-r from-green-500 to-teal-500">
+                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
+                                                            <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                                                        </svg>
+                                                    </div>
+                                                    <span className="fw-semibold">AI Powered</span>
+                                                </div>
+                                            </div>
+
+                                            <p className="mb-0 small">
+                                                © 2024 AI Book Discovery Platform. Built with modern web technologies and powered by machine learning algorithms.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </footer>
+                        </div>
+                    )}
+                </>
             )}
         </>
     );
