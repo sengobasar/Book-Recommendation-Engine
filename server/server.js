@@ -19,6 +19,7 @@ const Book = require('./models/Book');
 const Rating = require('./models/Rating');
 const User = require('./models/User');
 
+
 // -----------------------------
 // Load Collaborative Recommendations
 // -----------------------------
@@ -42,6 +43,7 @@ if (fs.existsSync(collabPath)) {
 // -----------------------------
 const recommendations = require('./routes/recommendations');
 const userRoutes = require('./routes/users');
+const postsRoutes = require('./routes/posts');
 
 // Recommendation routes
 app.use('/api/recommendations', recommendations);
@@ -49,6 +51,10 @@ app.use('/recommendations', recommendations);
 
 // User routes
 app.use('/api/users', userRoutes);
+app.use('/users', userRoutes);
+// Post routes
+app.use('/api/posts', postsRoutes);
+app.use('/posts', postsRoutes);
 
 // -----------------------------
 // Basic Routes
@@ -60,7 +66,7 @@ app.get('/', (req, res) => {
   });
 });
 
-app.get('/api/health', async (req, res) => {
+const healthHandler = async (req, res) => {
   try {
     const booksCount = await Book.countDocuments();
     const ratingsCount = await Rating.countDocuments();
@@ -79,7 +85,10 @@ app.get('/api/health', async (req, res) => {
       error: err.message
     });
   }
-});
+};
+
+app.get('/api/health', healthHandler);
+app.get('/health', healthHandler);
 
 // -----------------------------
 // MongoDB Connection

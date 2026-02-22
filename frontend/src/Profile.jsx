@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 export default function Profile() {
     const [user, setUser] = useState(null);
@@ -10,7 +10,7 @@ export default function Profile() {
     const authId = "test123";
 
     useEffect(() => {
-        fetch(`${API}/api/users/${authId}`)
+        fetch(`${API_BASE_URL}/users/${authId}`)
             .then((res) => res.json())
             .then((data) => {
                 setUser(data);
@@ -27,7 +27,7 @@ export default function Profile() {
     };
 
     const saveProfile = async () => {
-        await fetch(`${API}/api/users/${authId}`, {
+        await fetch(`${API_BASE_URL}/users/${authId}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",

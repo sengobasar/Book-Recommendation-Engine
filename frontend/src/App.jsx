@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-
+import Community from "./Community";
 // API Base URL (points to the Express backend)
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 // Enhanced Icons with micro-animations
 const Search = ({ className = "" }) => (
@@ -70,6 +70,7 @@ const TrendingUp = () => (
         <polyline points="16,7 22,7 22,13" />
     </svg>
 );
+
 
 // Floating Particles Component
 const FloatingParticles = ({ isDarkMode, count = 20 }) => {
@@ -169,7 +170,7 @@ const BookCard = ({ book, isDarkMode, index }) => {
             <div className="position-relative overflow-hidden rounded-top-4">
                 {!imageError ? (
                     <img
-                        src={book['Image-URL-M'] || book.imageUrl}
+                        src={book['Image-URL-M'] || book.imageUrlM || book.imageUrl}
                         alt={book['Book-Title'] || book.title}
                         className="card-img-top w-100 object-fit-cover rounded-top-4 transition-transform duration-500"
                         style={{
@@ -192,7 +193,7 @@ const BookCard = ({ book, isDarkMode, index }) => {
                     <div className={`badge ${isDarkMode ? 'bg-dark' : 'bg-white'} bg-opacity-90 px-3 py-2 rounded-pill fw-bold`}>
                         <div className="d-flex align-items-center">
                             <Star filled={true} className="text-warning me-1" />
-                            <span className="small">{(book.avg_ratings || book.rating || 0).toFixed(1)}</span>
+                            <span className="small">{(book.avg_ratings || book.bookRating || book.rating || 0).toFixed(1)}</span>
                         </div>
                     </div>
                 </div>
@@ -220,7 +221,7 @@ const BookCard = ({ book, isDarkMode, index }) => {
                 <div className="mt-auto">
                     <div className="d-flex align-items-center justify-content-between mb-3">
                         <div className="d-flex align-items-center text-warning">
-                            {renderStars(book.avg_ratings || book.rating || 0)}
+                            {renderStars(book.avg_ratings || book.bookRating || book.rating || 0)}
                         </div>
                         <div className={`small fw-medium ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                             {(book.num_ratings || book.ratings || 0).toLocaleString()} reviews
@@ -259,7 +260,7 @@ const LoginPage = ({ onLogin, isDarkMode }) => {
         setLoading(true);
         try {
             if (mode === "register") {
-                await fetch(`http://localhost:5000/api/users/create`, {
+                await fetch(`${API_BASE_URL}/users/create`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ email, username, authId: email })
@@ -415,34 +416,46 @@ const StatsCounter = ({ value, label, icon, isDarkMode }) => {
 
 // ---------------- PROFILE PAGE ----------------
 const ProfilePage = ({ goBack, isDarkMode, authId }) => {
-
     const [user, setUser] = useState(null);
 
-    const API = "http://localhost:5000";
-
     useEffect(() => {
-        fetch(`${API}/api/users/${authId}`)
-            .then(res => res.json())
-            .then(data => setUser(data));
+        if (!authId) return;
+
+        fetch(`${API_BASE_URL}/users/${authId}`)
+            .then(res => {
+                if (!res.ok) throw new Error("User not found");
+                return res.json();
+            })
+            .then(data => setUser(data))
+            .catch(err => {
+                console.error("Profile fetch error:", err);
+                setUser({ username: "Guest", email: "unknown@example.com", authId }); // Fallback
+            });
     }, [authId]);
 
     if (!user) {
         return (
             <div className={`min-vh-100 d-flex align-items-center justify-content-center ${isDarkMode ? "bg-dark text-white" : "bg-light text-dark"
                 }`}>
-                <div className="spinner-border text-primary" role="status"></div>
+                <div className="text-center">
+                    <div className="spinner-border text-primary mb-3" role="status"></div>
+                    <p className="opacity-75">Loading Profile...</p>
+                </div>
             </div>
         );
     }
 
     const save = async () => {
-        await fetch(`${API}/api/users/${authId}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(user)
-        });
-
-        alert("Profile Updated ✅");
+        try {
+            await fetch(`${API_BASE_URL}/users/${authId}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(user)
+            });
+            alert("Profile Updated ✅");
+        } catch (err) {
+            alert("Error updating profile ❌");
+        }
     };
 
     return (
@@ -625,24 +638,32 @@ export default function App() {
 
     useEffect(() => {
         const checkBackend = async () => {
+            console.log(`[Health Check] pinging: ${API_BASE_URL}/health`);
             try {
-                // Pointing to /api/health for a reliable connection check
                 const response = await fetch(`${API_BASE_URL}/health`);
                 if (response.ok) {
+                    const data = await response.json();
+                    console.log("[Health Check] Success:", data);
                     setBackendStatus('connected');
                 } else {
+                    console.warn(`[Health Check] Status ${response.status}`);
                     setBackendStatus('error');
                 }
             } catch (err) {
+                console.error("[Health Check] Error:", err.message);
                 setBackendStatus('error');
-                console.error('Backend connection failed:', err);
             }
         };
+
         checkBackend();
+
+        // Check again every 15s in case of cold starts or network drops
+        const interval = setInterval(checkBackend, 15000);
+        return () => clearInterval(interval);
     }, []);
 
     useEffect(() => {
-        if (backendStatus === 'connected') {
+        if (backendStatus === 'connected' && activeTab !== 'community') {
             fetchBooks();
         }
     }, [activeTab, backendStatus, fetchTrigger]);
@@ -668,7 +689,14 @@ export default function App() {
             icon: <Search />,
             description: 'Content-Based Matches',
             subtitle: 'Find books similar to your favorites'
-        }
+        },
+        {
+            id: "community",
+            label: "Community",
+            icon: <Users />,
+            description: "Discussion Forum",
+            subtitle: "Talk with readers"
+        },
     ];
 
     const handleSearch = () => {
@@ -1079,69 +1107,81 @@ export default function App() {
 
                                     {/* Books Display Area */}
                                     <div className="min-vh-50">
-                                        {loading && (
-                                            <div className="animate-fade-in-up">
-                                                <LoadingSpinner isDarkMode={isDarkMode} />
-                                            </div>
+                                        {/* Community Section */}
+                                        {activeTab === "community" && (
+                                            <Community isDarkMode={isDarkMode} />
                                         )}
 
-                                        {error && (
-                                            <div className={`alert ${isDarkMode ? 'bg-red-900 bg-opacity-30 text-red-200 border-red-800' : 'alert-danger shadow-sm'} rounded-4 p-5 text-center animate-fade-in-up`}>
-                                                <div className="mb-4">
-                                                    <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className={`${isDarkMode ? 'text-red-400' : 'text-red-500'}`}>
-                                                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-                                                        <line x1="12" y1="9" x2="12" y2="13" />
-                                                        <line x1="12" y1="17" x2="12.01" y2="17" />
-                                                    </svg>
-                                                </div>
-                                                <h3 className="fw-bold mb-3 mt-4">Offline Mode</h3>
-                                                <p className="mb-4 fs-5 opacity-90">
-                                                    {error}
-                                                </p>
-                                                <div className={`p-4 rounded-3 text-start mx-auto ${isDarkMode ? 'bg-gray-900 text-gray-300' : 'bg-gray-800 text-gray-100'
-                                                    }`} style={{ maxWidth: '500px', fontFamily: 'Monaco, monospace' }}>
-                                                    <div className="small">
-                                                        <div className="text-success">$ cd server</div>
-                                                        <div className="text-info">$ npm run dev</div>
-                                                        <div className="text-warning">$ # Server will start on http://localhost:5000</div>
+                                        {/* Recommendations Section (only if not community) */}
+                                        {activeTab !== "community" && (
+                                            <>
+                                                {loading && (
+                                                    <div className="animate-fade-in-up">
+                                                        <LoadingSpinner isDarkMode={isDarkMode} />
                                                     </div>
-                                                </div>
-                                            </div>
-                                        )}
+                                                )}
 
-                                        {/* Books Grid */}
-                                        {!loading && !error && books.length > 0 && (
-                                            <div className="book-grid">
-                                                {books.map((book, index) => (
-                                                    <BookCard
-                                                        key={`${book['Book-Title'] || book.title}-${index}`}
-                                                        book={book}
-                                                        isDarkMode={isDarkMode}
-                                                        index={index}
-                                                    />
-                                                ))}
-                                            </div>
-                                        )}
+                                                {error && (
+                                                    <div className={`alert ${isDarkMode ? 'bg-red-900 bg-opacity-30 text-red-200 border-red-800' : 'alert-danger shadow-sm'} rounded-4 p-5 text-center animate-fade-in-up`}>
+                                                        <div className="mb-4">
+                                                            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className={`${isDarkMode ? 'text-red-400' : 'text-red-500'}`}>
+                                                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                                                                <line x1="12" y1="9" x2="12" y2="13" />
+                                                                <line x1="12" y1="17" x2="12.01" y2="17" />
+                                                            </svg>
+                                                        </div>
+                                                        <h3 className="fw-bold mb-3 mt-4">Offline Mode</h3>
+                                                        <p className="mb-4 fs-5 opacity-90">
+                                                            {error}
+                                                        </p>
+                                                        <div className={`p-4 rounded-3 text-start mx-auto ${isDarkMode ? 'bg-gray-900 text-gray-300' : 'bg-gray-800 text-gray-100'
+                                                            }`} style={{ maxWidth: '600px', fontFamily: 'Monaco, monospace' }}>
+                                                            <div className="small overflow-hidden">
+                                                                <div className="text-info mb-1">Attempting to reach:</div>
+                                                                <div className="text-white mb-3 text-break" style={{ fontSize: '0.8rem' }}>{API_BASE_URL}</div>
+                                                                <div className="text-secondary opacity-50 mb-2">// Troubleshooting Guide:</div>
+                                                                <div className="text-success">$ cd server && npm run dev</div>
+                                                                <div className="text-warning small opacity-75 mt-2">If on Netlify: Check VITE_API_URL env var</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )}
 
-                                        {/* Empty State */}
-                                        {!loading && !error && books.length === 0 && backendStatus === 'connected' && (
-                                            <div className="text-center py-5">
-                                                <div className="mb-4">
-                                                    <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className={`${isDarkMode ? 'text-gray-600' : 'text-gray-400'}`}>
-                                                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-                                                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-                                                    </svg>
-                                                </div>
-                                                <h3 className={`fw-bold mb-3 ${isDarkMode ? 'text-white' : 'text-dark'}`}>
-                                                    No Books Found
-                                                </h3>
-                                                <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                                                    {activeTab === 'collaborative'
-                                                        ? "Try searching for a different book title or check the spelling."
-                                                        : "No recommendations are currently available for this category."
-                                                    }
-                                                </p>
-                                            </div>
+                                                {/* Books Grid */}
+                                                {!loading && !error && books.length > 0 && (
+                                                    <div className="book-grid">
+                                                        {books.map((book, index) => (
+                                                            <BookCard
+                                                                key={`${book['Book-Title'] || book.title}-${index}`}
+                                                                book={book}
+                                                                isDarkMode={isDarkMode}
+                                                                index={index}
+                                                            />
+                                                        ))}
+                                                    </div>
+                                                )}
+
+                                                {/* Empty State */}
+                                                {!loading && !error && books.length === 0 && backendStatus === 'connected' && (
+                                                    <div className="text-center py-5">
+                                                        <div className="mb-4">
+                                                            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className={`${isDarkMode ? 'text-gray-600' : 'text-gray-400'}`}>
+                                                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                                                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                                                            </svg>
+                                                        </div>
+                                                        <h3 className={`fw-bold mb-3 ${isDarkMode ? 'text-white' : 'text-dark'}`}>
+                                                            No Books Found
+                                                        </h3>
+                                                        <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                                                            {activeTab === 'collaborative'
+                                                                ? "Try searching for a different book title or check the spelling."
+                                                                : "No recommendations are currently available for this category."
+                                                            }
+                                                        </p>
+                                                    </div>
+                                                )}
+                                            </>
                                         )}
                                     </div>
                                 </div>
